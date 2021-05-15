@@ -29,10 +29,12 @@ const articles = [
     },
     ];
 
-app.get("/articles",(req,res)=>{
-    res.status(200)
-    res.json(articles)
-})
+ const getAllArticles=(req,res)=>{
+        res.status(200)
+        res.json(articles)
+    }
+
+app.get("/articles",getAllArticles)
 
 
 
