@@ -116,9 +116,24 @@ const deleteArticleById = (req,res)=>{
     }
   }
   res.status(404);
-    res.json(`not found article with id => ${id} `);
+    res.json(`not found article with id => ${id}`);
 }
 app.delete("/articles/:id",deleteArticleById)
+///////////////////////////////////////////////////////
+const deleteArticlesByAuthor = (req,res)=>{
+  const author = req.body.author
+  for (let i=0; i < articles.length ; i++) {
+    if (author === articles[i].author){
+      articles.splice(i,1)
+      i=i-1
+    }
+  }
+  const obj = {success : true,massage :`Success delete all the articles for the author => ${author}`}
+  res.json(obj)
+}
+
+
+app.delete("/articles",deleteArticlesByAuthor)
 ///////////////////////////////////////////////////////////////////
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
