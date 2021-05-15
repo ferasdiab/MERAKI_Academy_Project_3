@@ -84,9 +84,29 @@ const createNewArticle =  (req,res)=>{
 }
 app.post("/articles",createNewArticle)
 ///////////////////////////////////////////////////////////////////
+const updateAnArticleById = (req,res)=>{
+    id =  req.params.id
+    for (let i=0; i < articles.length ; i++){
+        console.log(id)
+        if (id == articles[i].id ){
+            if (req.body.title&&req.body.description&&req.body.author){
+                articles[i].title= req.body.title
+                articles[i].description= req.body.description
+                articles[i].author= req.body.author
+                res.status(200)
+                res.json(articles[i])
+                return
+            }
+            res.status(404)
+            res.json("must enter all keys title, description and author")
+        }
+    }
+    res.status(404);
+    res.json("not found");
+}
 
-
-
+app.put("/articles/:id",updateAnArticleById)
+///////////////////////////////////////////////////////////////////
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
