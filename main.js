@@ -1,7 +1,5 @@
 const express = require("express");
-const { uuid } = require('uuidv4');
-
-
+const { uuid } = require("uuidv4");
 
 const app = express();
 const port = 5000;
@@ -70,70 +68,75 @@ const getAnArticleById = (req, res) => {
 app.get("/articles/search_2", getAnArticleById);
 
 ///////////////////////////////////////////////////////
-const createNewArticle =  (req,res)=>{
-    const obj = {
-        title: req.body.title,
-        description:req.body.description,
-        author: req.body.author,
-        id : uuid(),
-    }
-    articles.push(obj)
+const createNewArticle = (req, res) => {
+  const obj = {
+    title: req.body.title,
+    description: req.body.description,
+    author: req.body.author,
+    id: uuid(),
+  };
+  articles.push(obj);
 
-    res.status(201)
-    res.json(obj)
-}
-app.post("/articles",createNewArticle)
+  res.status(201);
+  res.json(obj);
+};
+app.post("/articles", createNewArticle);
 ///////////////////////////////////////////////////////////////////
-const updateAnArticleById = (req,res)=>{
-    id =  req.params.id
-    for (let i=0; i < articles.length ; i++){
-        if (id == articles[i].id ){
-            if (req.body.title&&req.body.description&&req.body.author){
-                articles[i].title= req.body.title
-                articles[i].description= req.body.description
-                articles[i].author= req.body.author
-                res.status(200)
-                res.json(articles[i])
-                return
-            }
-            res.status(404)
-            res.json("must enter all keys title, description and author")
-        }
-    }
-    res.status(404);
-    res.json("not found");
-}
-app.put("/articles/:id",updateAnArticleById)
-//////////////////////////////////////////////
-const deleteArticleById = (req,res)=>{
-  id =  req.params.id
-  for (let i=0; i < articles.length ; i++){
-    if (id == articles[i].id ){
-      articles.splice(i,1);
-      res.status(200)
-      const obj = {success : true,massage :`Success Delete article with id => ${id}`}
-      res.json(obj)
+const updateAnArticleById = (req, res) => {
+  id = req.params.id;
+  for (let i = 0; i < articles.length; i++) {
+    if (id == articles[i].id) {
+      if (req.body.title && req.body.description && req.body.author) {
+        articles[i].title = req.body.title;
+        articles[i].description = req.body.description;
+        articles[i].author = req.body.author;
+        res.status(200);
+        res.json(articles[i]);
+        return;
+      }
+      res.status(404);
+      res.json("must enter all keys title, description and author");
     }
   }
   res.status(404);
-    res.json(`not found article with id => ${id}`);
-}
-app.delete("/articles/:id",deleteArticleById)
-///////////////////////////////////////////////////////
-const deleteArticlesByAuthor = (req,res)=>{
-  const author = req.body.author
-  for (let i=0; i < articles.length ; i++) {
-    if (author === articles[i].author){
-      articles.splice(i,1)
-      i=i-1
+  res.json(`not found article with id => ${id}`);
+};
+app.put("/articles/:id", updateAnArticleById);
+//////////////////////////////////////////////
+const deleteArticleById = (req, res) => {
+  id = req.params.id;
+  for (let i = 0; i < articles.length; i++) {
+    if (id == articles[i].id) {
+      articles.splice(i, 1);
+      res.status(200);
+      const obj = {
+        success: true,
+        massage: `Success Delete article with id => ${id}`,
+      };
+      res.json(obj);
+      return;
     }
   }
-  const obj = {success : true,massage :`Success delete all the articles for the author => ${author}`}
-  res.json(obj)
-}
-
-
-app.delete("/articles",deleteArticlesByAuthor)
+  res.status(404);
+  res.json(`not found article with id => ${id}`);
+};
+app.delete("/articles/:id", deleteArticleById);
+///////////////////////////////////////////////////////
+const deleteArticlesByAuthor = (req, res) => {
+  const author = req.body.author;
+  for (let i = 0; i < articles.length; i++) {
+    if (author === articles[i].author) {
+      articles.splice(i, 1);
+      i = i - 1;
+    }
+  }
+  const obj = {
+    success: true,
+    massage: `Success delete all the articles for the author => ${author}`,
+  };
+  res.json(obj);
+};
+app.delete("/articles", deleteArticlesByAuthor);
 ///////////////////////////////////////////////////////////////////
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
