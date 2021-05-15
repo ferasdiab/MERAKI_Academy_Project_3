@@ -87,7 +87,6 @@ app.post("/articles",createNewArticle)
 const updateAnArticleById = (req,res)=>{
     id =  req.params.id
     for (let i=0; i < articles.length ; i++){
-        console.log(id)
         if (id == articles[i].id ){
             if (req.body.title&&req.body.description&&req.body.author){
                 articles[i].title= req.body.title
@@ -104,8 +103,22 @@ const updateAnArticleById = (req,res)=>{
     res.status(404);
     res.json("not found");
 }
-
 app.put("/articles/:id",updateAnArticleById)
+//////////////////////////////////////////////
+const deleteArticleById = (req,res)=>{
+  id =  req.params.id
+  for (let i=0; i < articles.length ; i++){
+    if (id == articles[i].id ){
+      articles.splice(i,1);
+      res.status(200)
+      const obj = {success : true,massage :`Success Delete article with id => ${id}`}
+      res.json(obj)
+    }
+  }
+  res.status(404);
+    res.json(`not found article with id => ${id} `);
+}
+app.delete("/articles/:id",deleteArticleById)
 ///////////////////////////////////////////////////////////////////
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
