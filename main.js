@@ -52,6 +52,26 @@ const getArticlesByAuthor =  (req, res) => {
       }
 app.get("/articles/search_1", getArticlesByAuthor);
 
+////////////////////////////
+
+const getAnArticleById = (req,res)=>{
+    const id = req.query.id
+    const found = articles.find((element,index) => {
+        return element.id === parseInt(id);
+      });
+    if (found) {
+    console.log(found)
+    res.status(200)
+    res.json(found)
+    }else{
+        res.status(404)
+    res.json("not found")
+    }
+
+}
+
+app.get("/articles/search_2", getAnArticleById);
+
 
 
 
