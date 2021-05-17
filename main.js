@@ -1,12 +1,17 @@
 const express = require("express");
 const { uuid } = require("uuidv4");
 
+const db = require("./db");
+const { users, articles } = require("./schema");
+
+
 const app = express();
 const port = 5000;
 app.use(express.json());
 
 ////
-const articles = [
+
+const articlesa = [
   {
     id: 1,
     title: "How I learn coding?",
