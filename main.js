@@ -72,6 +72,7 @@ const {title,description} = req.body
     });
 });
 
+//////////////////////////////////////////////
 
 app.get("/articles", (req,res)=>{
   articles.find({})
@@ -84,39 +85,23 @@ app.get("/articles", (req,res)=>{
   });
 });
 
+/////////////////////////////////
+app.get("/articles/search_1", async (req,res)=>{
+  // query parameters way: "/articles/search_1?author=Jouza"
+  const userId = req.query.author;
+  articles.find({author:userId}).then((result)=>{
+    res.status(200);
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  }); 
 
-
-
-
-
-
-
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////
-const getAllArticles = (req, res) => {
-  res.status(200);
-  res.json(articles);
-};
 
-
-
-//////////////////////////////////////////////////
-
-const getArticlesByAuthor = (req, res) => {
-  // query parameters way: "/articles/search_1?author=Jouza"
-  const author = req.query.author;
-
-  const arr = articles.filter((element, index) => {
-    return author === element.author;
-  });
-  res.status(200);
-  res.json(arr);
-};
-app.get("/articles/search_1", getArticlesByAuthor);
-
-////////////////////////////
 
 const getAnArticleById = (req, res) => {
   const id = req.query.id;
