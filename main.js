@@ -29,7 +29,7 @@ app.post("/users",(req,res)=>{
 app.post("/articles", async (req,res)=>{
 let userId 
 
-await users.findOne({firstName:"firas"})
+await users.findOne({firstName:"omar"})
 .then((result)=>{
   userId = result._id
 }).catch((err) => {
@@ -111,33 +111,34 @@ app.delete("/articles/:id",(req,res)=>{
   const id = req.params.id;
   articles.findByIdAndDelete(id).then((result)=>{
     res.status(200)
-    res.json(result)
+    res.json({
+      success: true,
+      massage: `Success Delete article with id => ${id}`,
+    })
   }).catch((err) => {
     res.send(err);
   });
 });
 ///////////////////////////////////////////////////////////////////////
+app.delete("/articles",(req,res)=>{
+  const author = req.body.author;
+
+  articles.deleteMany({author:author}).then(result=>{
+    res.status(200)
+    res.json({
+      success: true,
+      massage: `Success delete all the articles for the author => ${author}`,
+    })
+  }).catch((err) => {
+    res.send(err);
+  });
+});
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////
 
-const deleteArticlesByAuthor = (req, res) => {
-  const author = req.body.author;
-  for (let i = 0; i < articles.length; i++) {
-    if (author === articles[i].author) {
-      articles.splice(i, 1);
-      i = i - 1;
-    }
-  }
-  const obj = {
-    success: true,
-    massage: `Success delete all the articles for the author => ${author}`,
-  };
-  res.json(obj);
-};
-app.delete("/articles", deleteArticlesByAuthor);
-///////////////////////////////////////////////////////////////////
+
 
 
 app.listen(port, () => {
