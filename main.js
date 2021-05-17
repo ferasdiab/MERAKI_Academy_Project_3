@@ -91,60 +91,37 @@ app.get("/articles/search_2",(req,res)=>{
 /////////////////////////////////////
 app.put("/articles/:id",(req,res)=>{
   const id = req.params.id;
-  const {title,description} = req.body
-  articles.findByIdAndUpdate(id,{title,description}, {new:true})
+  const {title,description,author} = req.body
+  if (req.body.title && req.body.description && req.body.author){
+  articles.findByIdAndUpdate(id,{title,description,author}, {new:true})
   .then((result)=>{
     res.status(200)
     res.json(result)
   }).catch((err) => {
     res.send(err);
-  }); 
-
+  });
+ }else{
+  res.status(404);
+  res.json("must enter all keys title and  description ");
+ }
 });
 
+///////////////////////////////////////////////////////////////////////
+app.delete("/articles/:id",(req,res)=>{
+  const id = req.params.id;
+  articles.findByIdAndDelete(id).then((result)=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  });
+});
+///////////////////////////////////////////////////////////////////////
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////
-const updateAnArticleById = (req, res) => {
-  id = req.params.id;
-  for (let i = 0; i < articles.length; i++) {
-    if (id == articles[i].id) {
-      if (req.body.title && req.body.description && req.body.author) {
-        articles[i].title = req.body.title;
-        articles[i].description = req.body.description;
-        articles[i].author = req.body.author;
-        res.status(200);
-        res.json(articles[i]);
-        return;
-      }
-      res.status(404);
-      res.json("must enter all keys title, description and author");
-    }
-  }
-  res.status(404);
-  res.json(`not found article with id => ${id}`);
-};
-//////////////////////////////////////////////
-const deleteArticleById = (req, res) => {
-  id = req.params.id;
-  for (let i = 0; i < articles.length; i++) {
-    if (id == articles[i].id) {
-      articles.splice(i, 1);
-      res.status(200);
-      const obj = {
-        success: true,
-        massage: `Success Delete article with id => ${id}`,
-      };
-      res.json(obj);
-      return;
-    }
-  }
-  res.status(404);
-  res.json(`not found article with id => ${id}`);
-};
-app.delete("/articles/:id", deleteArticleById);
-///////////////////////////////////////////////////////
+
 const deleteArticlesByAuthor = (req, res) => {
   const author = req.body.author;
   for (let i = 0; i < articles.length; i++) {
