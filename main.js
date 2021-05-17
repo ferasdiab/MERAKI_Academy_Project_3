@@ -86,7 +86,8 @@ app.get("/articles", (req,res)=>{
 });
 
 /////////////////////////////////
-app.get("/articles/search_1", async (req,res)=>{
+
+app.get("/articles/search_1",  (req,res)=>{
   // query parameters way: "/articles/search_1?author=Jouza"
   const userId = req.query.author;
   articles.find({author:userId}).then((result)=>{
@@ -96,6 +97,17 @@ app.get("/articles/search_1", async (req,res)=>{
     res.send(err);
   }); 
 
+});
+////////////////////////////////////////////////
+app.get("/articles/search_2",(req,res)=>{
+  const id = req.query.id;
+  articles.find({_id:id}).populate("author","firstName").exec()
+  .then((result)=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  }); 
 });
 
 
@@ -118,7 +130,6 @@ const getAnArticleById = (req, res) => {
   }
 };
 
-app.get("/articles/search_2", getAnArticleById);
 
 ///////////////////////////////////////////////////////
 const createNewArticle = (req, res) => {
