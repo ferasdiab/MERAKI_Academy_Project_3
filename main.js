@@ -11,27 +11,6 @@ app.use(express.json());
 
 ////
 
-const articlesa = [
-  {
-    id: 1,
-    title: "How I learn coding?",
-    description: "Lorem, Quam, mollitia.",
-    author: "Jouza",
-  },
-  {
-    id: 2,
-    title: "Coding Best Practices",
-    description: "Lorem, ipsum dolor sit, Quam, mollitia.",
-    author: "Besslan",
-  },
-  {
-    id: 3,
-    title: "Debugging",
-    description: "Lorem, Quam, mollitia.",
-    author: "Jouza",
-  },
-];
-
 
 
 //////////////////////////////////////////////////
@@ -47,11 +26,11 @@ app.post("/users",(req,res)=>{
 })
 
 /////////////////////////////////////////////
-app.post("/articles",async (req,res)=>{
+app.post("/articles", async (req,res)=>{
 let userId 
+
 await users.findOne({firstName:"firas"})
 .then((result)=>{
-  console.log("h",result)
   userId = result._id
 }).catch((err) => {
   res.send(err);
@@ -109,43 +88,24 @@ app.get("/articles/search_2",(req,res)=>{
     res.send(err);
   }); 
 });
+/////////////////////////////////////
+app.put("/articles/:id",(req,res)=>{
+  const id = req.params.id;
+  const {title,description} = req.body
+  articles.findByIdAndUpdate(id,{title,description}, {new:true})
+  .then((result)=>{
+    res.status(200)
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  }); 
+
+});
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////
-
-
-const getAnArticleById = (req, res) => {
-  const id = req.query.id;
-  const found = articles.find((element, index) => {
-    return element.id === parseInt(id);
-  });
-  if (found) {
-    console.log(found);
-    res.status(200);
-    res.json(found);
-  } else {
-    res.status(404);
-    res.json("not found");
-  }
-};
-
-
-///////////////////////////////////////////////////////
-const createNewArticle = (req, res) => {
-  const obj = {
-    title: req.body.title,
-    description: req.body.description,
-    author: req.body.author,
-    id: uuid(),
-  };
-  articles.push(obj);
-
-  res.status(201);
-  res.json(obj);
-};
-//app.post("/articles", createNewArticle);
-///////////////////////////////////////////////////////////////////
 const updateAnArticleById = (req, res) => {
   id = req.params.id;
   for (let i = 0; i < articles.length; i++) {
@@ -165,7 +125,6 @@ const updateAnArticleById = (req, res) => {
   res.status(404);
   res.json(`not found article with id => ${id}`);
 };
-app.put("/articles/:id", updateAnArticleById);
 //////////////////////////////////////////////
 const deleteArticleById = (req, res) => {
   id = req.params.id;
