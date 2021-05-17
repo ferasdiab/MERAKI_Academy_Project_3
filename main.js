@@ -49,10 +49,10 @@ app.post("/users",(req,res)=>{
 /////////////////////////////////////////////
 app.post("/articles",async (req,res)=>{
 let userId 
-
 await users.findOne({firstName:"firas"})
 .then((result)=>{
-  userId = result
+  console.log("h",result)
+  userId = result._id
 }).catch((err) => {
   res.send(err);
 });
@@ -61,7 +61,7 @@ const {title,description} = req.body
   const newArticle = new articles({
     title,
     description,
-    author:userId._id})
+    author:userId})
 
     newArticle.save()
     .then((result)=>{
@@ -70,16 +70,37 @@ const {title,description} = req.body
     }).catch((err) => {
       res.send(err);
     });
-
 });
 
+
+app.get("/articles", (req,res)=>{
+  articles.find({})
+  .then(result=>{
+    //console.log(result)
+    res.status(200)
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  });
+});
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////
 const getAllArticles = (req, res) => {
   res.status(200);
   res.json(articles);
 };
 
-app.get("/articles", getAllArticles);
+
 
 //////////////////////////////////////////////////
 
