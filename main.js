@@ -32,10 +32,7 @@ const articlesa = [
   },
 ];
 
-const getAllArticles = (req, res) => {
-  res.status(200);
-  res.json(articles);
-};
+
 
 //////////////////////////////////////////////////
 app.post("/users",(req,res)=>{
@@ -49,8 +46,38 @@ app.post("/users",(req,res)=>{
   });
 })
 
-////////////////////////////////////////////
+/////////////////////////////////////////////
+app.post("/articles",async (req,res)=>{
+let userId 
 
+await users.findOne({firstName:"firas"})
+.then((result)=>{
+  userId = result
+}).catch((err) => {
+  res.send(err);
+});
+
+const {title,description} = req.body
+  const newArticle = new articles({
+    title,
+    description,
+    author:userId._id})
+
+    newArticle.save()
+    .then((result)=>{
+      res.status(201)
+      res.json(result)
+    }).catch((err) => {
+      res.send(err);
+    });
+
+});
+
+////////////////////////////////////////////
+const getAllArticles = (req, res) => {
+  res.status(200);
+  res.json(articles);
+};
 
 app.get("/articles", getAllArticles);
 
@@ -100,7 +127,7 @@ const createNewArticle = (req, res) => {
   res.status(201);
   res.json(obj);
 };
-app.post("/articles", createNewArticle);
+//app.post("/articles", createNewArticle);
 ///////////////////////////////////////////////////////////////////
 const updateAnArticleById = (req, res) => {
   id = req.params.id;
