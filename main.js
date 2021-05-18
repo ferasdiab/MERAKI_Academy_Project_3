@@ -37,6 +37,18 @@ app.post("/articles",  (req,res)=>{
       res.send(err);
     });
 });
+///////////////////////////////////////////////////////////
+app.post("/login",(req,res)=>{
+  const {email,password} = req.body;
+  users.findOne({email:email,password:password}).then((result)=>{
+    if (result){
+    res.status(200);
+    res.json("Valid login credentials");
+    }else{
+    res.status(401);
+    res.json("Invalid login credentials")};
+  })
+});
 
 //////////////////////////////////////////////
 
