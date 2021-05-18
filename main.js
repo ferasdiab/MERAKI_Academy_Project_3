@@ -1,5 +1,6 @@
 const express = require("express");
 const { uuid } = require("uuidv4");
+const axios = require("axios");
 
 const db = require("./db");
 const { users, articles,comments } = require("./schema");
@@ -150,9 +151,28 @@ app.post("/articles/:id/comments",(req,res)=>{
   }).catch((err) => {
     res.send(err);
   });
-
-
 });
+///////////////////////////////////////////////////////////////////
+app.get("/NewsAPI", (req,res)=>{
+  axios.get("https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=b18b4145baa0495591f7dd5df9de3211")
+  .then(result=>{
+    res.send(result.data)
+  }).catch((err) => {
+    res.send(err);
+  });
+})
+
+//////////////////////////////////////////////////////////////////////////////////
+app.get("/WeatherAPI",(req,res)=>{
+  axios.get(`https://api.openweathermap.org/data/2.5/weather?q=Amman&appid=6706183b35592d6e9bd68b7fc3472f17`)
+  .then(result=>{
+    res.send(result.data.main)
+  }).catch((err) => {
+    res.send(err);
+  });
+})
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////
