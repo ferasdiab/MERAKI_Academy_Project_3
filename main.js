@@ -47,13 +47,15 @@ app.post("/login",(req,res)=>{
     }else{
     res.status(401);
     res.json("Invalid login credentials")};
-  })
+  }).catch((err) => {
+    res.send(err);
+  });
 });
 
 //////////////////////////////////////////////
 
 app.get("/articles", (req,res)=>{
-  articles.find({})
+  articles.find({}).populate("comments","comment")
   .then(result=>{
     //console.log(result)
     res.status(200)
@@ -131,6 +133,25 @@ app.delete("/articles",(req,res)=>{
   }).catch((err) => {
     res.send(err);
   });
+});
+
+///////////////////////////////////////////////////
+app.post("/articles/:id/comments",(req,res)=>{
+  const id = req.params.id
+  const {comment,commenter} = req.body
+  const newComment = new comments({comment,commenter})
+  newComment.save().then(async (result)=>{
+   await articles.update(
+    { _id: id }, 
+    { $push: { comments: result._id } }
+);
+    res.status(201)
+    res.json(result)
+  }).catch((err) => {
+    res.send(err);
+  });
+
+
 });
 
 
