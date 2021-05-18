@@ -2,16 +2,12 @@ const express = require("express");
 const { uuid } = require("uuidv4");
 
 const db = require("./db");
-const { users, articles } = require("./schema");
+const { users, articles,comments } = require("./schema");
 
 
 const app = express();
 const port = 5000;
 app.use(express.json());
-
-////
-
-
 
 //////////////////////////////////////////////////
 app.post("/users",(req,res)=>{
@@ -26,21 +22,12 @@ app.post("/users",(req,res)=>{
 })
 
 /////////////////////////////////////////////
-app.post("/articles", async (req,res)=>{
-let userId 
-
-await users.findOne({firstName:"omar"})
-.then((result)=>{
-  userId = result._id
-}).catch((err) => {
-  res.send(err);
-});
-
-const {title,description} = req.body
+app.post("/articles",  (req,res)=>{
+  const {title,description,author} = req.body
   const newArticle = new articles({
     title,
     description,
-    author:userId})
+    author})
 
     newArticle.save()
     .then((result)=>{
@@ -67,7 +54,7 @@ app.get("/articles", (req,res)=>{
 /////////////////////////////////
 
 app.get("/articles/search_1",  (req,res)=>{
-  // query parameters way: "/articles/search_1?author=Jouza"
+  // query parameters way: "/articles/search_1?author=id"
   const userId = req.query.author;
   articles.find({author:userId}).then((result)=>{
     res.status(200);
@@ -119,7 +106,7 @@ app.delete("/articles/:id",(req,res)=>{
     res.send(err);
   });
 });
-///////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////
 app.delete("/articles",(req,res)=>{
   const author = req.body.author;
 
@@ -136,11 +123,6 @@ app.delete("/articles",(req,res)=>{
 
 
 ////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////
-
-
-
-
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
