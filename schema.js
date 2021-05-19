@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+const { response } = require("express");
 
 const usersSchema = new mongoose.Schema({
 firstName: {type:String, required:true},
@@ -8,6 +10,12 @@ country:  {type:String, required:true},
 email:  {type:String, required:true, unique:true},
 password: {type:String, required:true, unique:true}
 })
+const salt = 10 
+usersSchema.pre("save", async function () {
+    this.email = this.email.toLowerCase();
+    const hashedPassword =  await bcrypt.hash(this.password, salt);
+    this.password = hashedPassword
+  });
 
 const articlesSchema  = new mongoose.Schema({
     title:{type:String, required:true, unique:true},

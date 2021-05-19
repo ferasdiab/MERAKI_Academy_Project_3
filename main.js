@@ -1,6 +1,10 @@
 const express = require("express");
 const { uuid } = require("uuidv4");
 const axios = require("axios");
+const bcrypt = require("bcrypt");
+require("dotenv").config();
+const jwt = require("jsonwebtoken");
+
 
 const db = require("./db");
 const { users, articles,comments } = require("./schema");
@@ -9,6 +13,9 @@ const { users, articles,comments } = require("./schema");
 const app = express();
 const port = 5000;
 app.use(express.json());
+
+
+const SECRET = process.env.SECRET
 
 //////////////////////////////////////////////////
 app.post("/users",(req,res)=>{
@@ -39,15 +46,36 @@ app.post("/articles",  (req,res)=>{
     });
 });
 ///////////////////////////////////////////////////////////
-app.post("/login",(req,res)=>{
+app.post("/login",(req,res,next)=>{
   const {email,password} = req.body;
-  users.findOne({email:email,password:password}).then((result)=>{
-    if (result){
-    res.status(200);
-    res.json("Valid login credentials");
+  users.findOne({email:email}).then((response)=>{
+    if (response){
+    const hashedPassword = response.password
+      bcrypt.compare(password, hashedPassword, (err, result) => {
+        if (result){
+          const payload = {
+            userId: `${response._id}`,
+            country: response.country
+          };
+          const  options =  { expiresIn: '60m' }
+          const token = jwt.sign(payload, SECRET, options);
+
+          
+          res.status(200)
+          res.json({
+            token
+          })
+        }else{
+          const err = new Error("The password you’ve entered is incorrect");
+          err.status = 403;
+          next(err);
+        }
+      });
     }else{
-    res.status(401);
-    res.json("Invalid login credentials")};
+    const err = new Error("The email doesn't exist");
+    err.status = 404;
+    next(err);
+  };
   }).catch((err) => {
     res.send(err);
   });
@@ -56,7 +84,7 @@ app.post("/login",(req,res)=>{
 //////////////////////////////////////////////
 
 app.get("/articles", (req,res)=>{
-  articles.find({}).populate("comments","comment")
+  articles.find({}).populate("comments","comment").populate("author","firstName")
   .then(result=>{
     //console.log(result)
     res.status(200)
@@ -171,6 +199,21 @@ app.get("/WeatherAPI",(req,res)=>{
     res.send(err);
   });
 })
+
+
+/////////////////////////////////////////////
+app.use((err, req, res, next) => {
+  // set the status code
+  res.status(err.status);
+  // send the response in JSON format
+  res.json({
+    error: {
+      status: err.status,
+      message: err.message,
+    },
+  });
+});
+
 
 
 

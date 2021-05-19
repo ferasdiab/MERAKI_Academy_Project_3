@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const option = {
   useCreateIndex: true,
@@ -6,9 +7,12 @@ const option = {
   useUnifiedTopology: true,
   useNewUrlParser: true,
 };
-mongoose.connect("mongodb://localhost:27017/project_3_v01", option).then(
+const url = process.env.DB_URI
+mongoose.connect(url, option).then(
   () => {
-    console.log("DB connected");
+    console.log(`DB connected
+    
+    `);
   },
   (err) => {
     console.log(err);
