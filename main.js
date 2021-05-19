@@ -60,14 +60,16 @@ app.post("/addRole",(req,res)=>{
 ///////////////////////////////////////////////////////////
 app.post("/login",(req,res,next)=>{
   const {email,password} = req.body;
-  users.findOne({email:email}).then((response)=>{
+  users.findOne({email:email}).populate("roles").then((response)=>{
     if (response){
     const hashedPassword = response.password
       bcrypt.compare(password, hashedPassword, (err, result) => {
         if (result){
+          
           const payload = {
             userId: `${response._id}`,
-            country: response.country
+            country: response.country,
+            role: { role:response.roles.role, permissions:response.roles.permissions }
           };
           const  options =  { expiresIn: '60m' }
           const token = jwt.sign(payload, SECRET, options);
