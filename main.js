@@ -7,27 +7,26 @@ const jwt = require("jsonwebtoken");
 
 
 const db = require("./db");
-const { users, articles,comments } = require("./schema");
+const { users, articles,comments,roles } = require("./schema");
 
 
 const app = express();
 const port = 5000;
 app.use(express.json());
 
-
 const SECRET = process.env.SECRET
 
 //////////////////////////////////////////////////
 app.post("/users",(req,res)=>{
-  const  {firstName,lastName,age,country,email,password}= req.body
-  const newUser = new  users( {firstName,lastName,age,country,email,password})
+  const  {firstName,lastName,age,country,email,password,roles}= req.body
+  const newUser = new  users( {firstName,lastName,age,country,email,password,roles})
   newUser.save().then((result)=>{
     res.status(201)
     res.json(result)
   }).catch((err) => {
     res.send(err);
   });
-})
+});
 
 /////////////////////////////////////////////
 app.post("/articles",  (req,res)=>{
@@ -36,7 +35,6 @@ app.post("/articles",  (req,res)=>{
     title,
     description,
     author})
-
     newArticle.save()
     .then((result)=>{
       res.status(201)
@@ -45,6 +43,20 @@ app.post("/articles",  (req,res)=>{
       res.send(err);
     });
 });
+
+app.post("/addRole",(req,res)=>{
+  const {role,permissions} = req.body
+  const newRole = new roles({role,permissions})
+  newRole.save()
+    .then((result)=>{
+      res.status(201)
+      res.json(result)
+    }).catch((err) => {
+      res.send(err);
+    });
+});
+
+
 ///////////////////////////////////////////////////////////
 app.post("/login",(req,res,next)=>{
   const {email,password} = req.body;
@@ -176,15 +188,9 @@ const authentication = (req,res,next)=>{
       });
     }
     if (result) {
-      console.log(result)
       next();
     }
   });
-  /*
-  if (verfiy){return Promise.resolve(verfiy)}else{
-    return Promise.reject()
-  }
-*/
 }
 
 app.post("/articles/:id/comments",authentication,(req,res)=>{
