@@ -59,8 +59,6 @@ app.post("/login",(req,res,next)=>{
           };
           const  options =  { expiresIn: '60m' }
           const token = jwt.sign(payload, SECRET, options);
-
-          
           res.status(200)
           res.json({
             token
@@ -165,12 +163,36 @@ app.delete("/articles",(req,res)=>{
 });
 
 ///////////////////////////////////////////////////
-app.post("/articles/:id/comments",(req,res)=>{
+const authentication = (req,res,next)=>{
+  const token = req.headers.authorization.split(" ")[1];
+  console.log(token)
+  
+  jwt.verify(token, SECRET, (err, result) => {
+    if (err) {
+      res.status(403)
+      return res.json({
+        message : "the token is invailed or expired",
+        status: 403
+      });
+    }
+    if (result) {
+      console.log(result)
+      next();
+    }
+  });
+  /*
+  if (verfiy){return Promise.resolve(verfiy)}else{
+    return Promise.reject()
+  }
+*/
+}
+
+app.post("/articles/:id/comments",authentication,(req,res)=>{
   const id = req.params.id
   const {comment,commenter} = req.body
   const newComment = new comments({comment,commenter})
   newComment.save().then(async (result)=>{
-   await articles.update(
+   await articles.updateOne(
     { _id: id }, 
     { $push: { comments: result._id } }
 );

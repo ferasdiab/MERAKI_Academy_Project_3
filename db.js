@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const option = {
   useCreateIndex: true,
-  useFindAndModify: true,
+  useFindAndModify: false,
   useUnifiedTopology: true,
   useNewUrlParser: true,
 };
