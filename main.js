@@ -178,22 +178,42 @@ app.delete("/articles",(req,res)=>{
 
 ///////////////////////////////////////////////////
 const authentication = (req,res,next)=>{
+  if (!req.headers.authorization){
+    res.status(404)
+    return res.json("no token")
+  }
   const token = req.headers.authorization.split(" ")[1];
-  console.log(token)
   
-  jwt.verify(token, SECRET, (err, result) => {
+  try {
+    const vari = jwt.verify(token, SECRET)
+    if (vari) {
+    req.token = "verified token"
+    next();
+    }
+  }  
+  catch (err){
+    res.status(403)
+    return res.json({
+      message : "the token is invalid or expired",
+      status: 403
+    })
+  }
+  /*
+  jwt.verify(token, SECRET,(err, result) => {
     if (err) {
       res.status(403)
       return res.json({
-        message : "the token is invailed or expired",
+        message : "the token is invalid or expired",
         status: 403
       });
     }
     if (result) {
+      req.token = "verified token"
       next();
     }
   });
-}
+  */
+};
 
 app.post("/articles/:id/comments",authentication,(req,res)=>{
   const id = req.params.id
