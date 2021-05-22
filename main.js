@@ -17,6 +17,48 @@ app.use(express.json());
 const SECRET = process.env.SECRET
 
 //////////////////////////////////////////////////
+// middleware functions  
+const authentication = (req,res,next)=>{
+  if (!req.headers.authorization){
+    res.status(404)
+    return res.json("no token")
+  }
+  const token = req.headers.authorization.split(" ")[1];
+  
+  try {
+    const vari = jwt.verify(token, SECRET)
+    if (vari) {
+    req.token = vari
+    next();
+    }
+  }  
+  catch (err){
+    res.status(403)
+    return res.json({
+      message : "the token is invalid or expired",
+      status: 403
+    })
+  }
+  
+};
+
+const authorization = (string)=>{
+let str = string
+  return (req,res,next)=>{
+    const vari = req.token
+    const arr = vari.role.permissions
+    for (let i=0;i<arr.length;i++){
+      if(arr[i]==str){return next()
+      }
+    }
+    res.status(403 )
+    return res.json(
+      { message: 'forbidden ', status: 403 }
+    )
+  }
+
+};
+////////////////////////////////////////////////
 app.post("/users",(req,res)=>{
   const  {firstName,lastName,age,country,email,password,roles}= req.body
   const newUser = new  users( {firstName,lastName,age,country,email,password,roles})
@@ -29,7 +71,7 @@ app.post("/users",(req,res)=>{
 });
 
 /////////////////////////////////////////////
-app.post("/articles",  (req,res)=>{
+app.post("/articles",authentication,authorization("CREATE_ARTICLES") , (req,res)=>{
   const {title,description,author} = req.body
   const newArticle = new articles({
     title,
@@ -98,13 +140,19 @@ app.post("/login",(req,res,next)=>{
 app.get("/articles", (req,res)=>{
   articles.find({}).populate("comments","comment").populate("author","firstName")
   .then(result=>{
-    //console.log(result)
     res.status(200)
     res.json(result)
   }).catch((err) => {
     res.send(err);
   });
 });
+
+////////////////////////
+app.get("/comments",(req,res)=>{
+  comments.find({}).then((result)=>{
+    res.json(result)
+  })
+})
 
 /////////////////////////////////
 
@@ -177,47 +225,11 @@ app.delete("/articles",(req,res)=>{
 });
 
 ///////////////////////////////////////////////////
-const authentication = (req,res,next)=>{
-  if (!req.headers.authorization){
-    res.status(404)
-    return res.json("no token")
-  }
-  const token = req.headers.authorization.split(" ")[1];
-  
-  try {
-    const vari = jwt.verify(token, SECRET)
-    if (vari) {
-    req.token = "verified token"
-    next();
-    }
-  }  
-  catch (err){
-    res.status(403)
-    return res.json({
-      message : "the token is invalid or expired",
-      status: 403
-    })
-  }
-  /*
-  jwt.verify(token, SECRET,(err, result) => {
-    if (err) {
-      res.status(403)
-      return res.json({
-        message : "the token is invalid or expired",
-        status: 403
-      });
-    }
-    if (result) {
-      req.token = "verified token"
-      next();
-    }
-  });
-  */
-};
 
-app.post("/articles/:id/comments",authentication,(req,res)=>{
+app.post("/articles/:id/comments",authentication,authorization("CREATE_COMMENTS"),(req,res)=>{
   const id = req.params.id
-  const {comment,commenter} = req.body
+  const {comment} = req.body
+  const commenter = req.token.userId
   const newComment = new comments({comment,commenter})
   newComment.save().then(async (result)=>{
    await articles.updateOne(
