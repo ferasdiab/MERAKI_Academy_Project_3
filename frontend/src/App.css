@@ -1,0 +1,64 @@
+.app {
+    border: 7px solid green;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.Navigation {
+    display: flex;
+    gap: 20px;
+    border: 7px solid red;
+    padding: 10px;
+
+}
+.Register {
+    border: 7px solid blue;
+    margin-top: 10px;
+    
+}
+.login {
+    border: 7px solid purple;
+    margin-top: 10px;
+}
+.NewArticle {
+    border: 7px solid orange;
+    margin-top: 10px;
+}
+.RegisterInput, .loginInput, .NewArticleInput {
+    width: 300px;
+    display: flex;
+flex-direction: column;
+gap: 10px;
+}
+.RegisterInput  input, .loginInput input, .NewArticleInput input {
+    height: 25px;
+}
+#NewArticleDescription {
+    height: 75px;
+}
+
+.RegisterButton, .NewArticleButton{
+    margin-top: 15px;
+}
+.RegisterButton button, .NewArticleButton button {
+    color: white;
+    font-size: 20px;
+    width: 300px;
+    height: 35px;
+    background-color: rgb(75, 75, 255);
+}
+
+.created{
+    width: 300px;
+    background-color: green;
+    height: 50px;
+    text-align: center;
+}
+
+
+.errCreated{
+    width: 300px;
+    background-color: red;
+    height: 50px;
+    text-align: center;
+}

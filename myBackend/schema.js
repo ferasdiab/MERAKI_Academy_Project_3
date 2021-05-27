@@ -47,4 +47,3 @@ module.exports.users = users;
 module.exports.articles = articles;
 module.exports.comments = comments;
 module.exports.roles = roles;
-
