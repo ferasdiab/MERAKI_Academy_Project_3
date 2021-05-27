@@ -7,6 +7,7 @@ export default function NewArticle({ token }) {
   const [massage, setMassage] = useState(false);
   const [errorMassage, setErrorMassage] = useState(false);
   const chick = () => {
+      console.log(token)
     axios
       .post(
         "http://localhost:5000/articles",
@@ -22,11 +23,11 @@ export default function NewArticle({ token }) {
             setErrorMassage(false)
                       setMassage(true);
         }else{
-            setErrorMassage(true)
+            setErrorMassage("Error happened while creating new article, please try again")
         }
       }).catch(error=>{
-          console.log(error)
-      })
+        setErrorMassage("you need to login first")
+          })
       
   };
 
@@ -56,20 +57,13 @@ export default function NewArticle({ token }) {
         </div>
         <div>
           {massage ? (
-            <p className="created">The article has been created successfully</p>
+            <div className="created">The article has been created successfully</div>
           ) : (
             ""
           )}
         </div>
-        <div>
-          {errorMassage ? (
-            <p className="errCreated">
-              Error happened while creating new article, please try again{" "}
-            </p>
-          ) : (
-            ""
-          )}
-        </div>
+        <div >{errorMassage  ?  <div className = "errCreated"><p>{errorMassage}</p> </div> : "" }</div>
+        
       </div>
     </div>
   );

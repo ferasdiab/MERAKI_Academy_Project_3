@@ -24,6 +24,10 @@
     border: 7px solid orange;
     margin-top: 10px;
 }
+.Dashboard{
+    border: 7px solid blue;
+    margin-top: 10px;
+}
 .RegisterInput, .loginInput, .NewArticleInput {
     width: 300px;
     display: flex;
@@ -37,10 +41,10 @@ gap: 10px;
     height: 75px;
 }
 
-.RegisterButton, .NewArticleButton{
+.RegisterButton, .NewArticleButton, .DashboardButton{
     margin-top: 15px;
 }
-.RegisterButton button, .NewArticleButton button {
+.RegisterButton button, .NewArticleButton button, .DashboardButton button {
     color: white;
     font-size: 20px;
     width: 300px;
@@ -57,8 +61,27 @@ gap: 10px;
 
 
 .errCreated{
+    text-align: center;
     width: 300px;
     background-color: red;
     height: 50px;
+}
+
+.errCreated p {
+    margin: auto;
     text-align: center;
+}
+
+.allArticlesP {
+    display: flex;
+    flex-flow :  wrap;
+    justify-content: space-between;
+    
+    
+}
+
+.allArticlesCH {
+    width: 49%;
+border: 2px solid wheat;
+padding-left: 10px;
 }
