@@ -17,7 +17,7 @@ const [token, setToken] = useState('');
       <Route exact path="/register" component={Register}  />
       <Route exact path="/login" render={() => <Login loginFun={setToken} token = {token} />} />
       <Route exact path="/dashboard" component={Dashboard} />
-      <Route exact path="/newArticle" component={NewArticle} />
+      <Route exact path="/newArticle"  render={() => <NewArticle  token = {token} />} />
      
       
 
