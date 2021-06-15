@@ -53,32 +53,28 @@ const createNewArticle = (req, res) => {
 };
 
 const updateAnArticleById = (req, res) => {
+	const {title,description,author_id} =req.body
   const id = req.params.id;
-
-  articlesModel
-    .findByIdAndUpdate(id, req.body, { new: true })
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+ const query =  `UPDATE articles SET title = ? , description = ?,author_id=?  WHERE id = ?` ;
+const data = [title,description,author_id,id]
+db.query(query,data,(err,result)=>{
+	if (err) {
+		res.send(err);
+	  }
+	  res.status(200).json(result);
+})
 };
 
 const deleteArticleById = (req, res) => {
   const id = req.params.id;
-
-  articlesModel
-    .findByIdAndDelete(id)
-    .then((result) => {
-      res.status(200).json({
-        success: true,
-        message: `Success Delete atricle with id => ${id}`,
-      });
-    })
-    .catch((err) => {
-      res.send(err);
-    });
+  const query =  `UPDATE articles SET is_deleted=1  WHERE id = ?` ;
+  const data =[id]
+  db.query(query,data,(err,result)=>{
+	if (err) {
+		res.send(err);
+	  }
+	  res.status(200).json(result);
+})
 };
 
 const deleteArticlesByAuthor = (req, res) => {
