@@ -102,6 +102,11 @@ app.post("/addRole",(req,res)=>{
 ///////////////////////////////////////////////////////////
 app.post("/login",(req,res,next)=>{
   const {email,password} = req.body;
+  users.login(email,password).then(result=>{
+res.status(result[0])
+    res.json(result[1])
+  })
+  /*
   users.findOne({email:email}).populate("roles").then((response)=>{
     if (response){
     const hashedPassword = response.password
@@ -133,6 +138,7 @@ app.post("/login",(req,res,next)=>{
   }).catch((err) => {
     res.send(err);
   });
+  */
 });
 
 //////////////////////////////////////////////

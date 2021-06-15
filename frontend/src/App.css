@@ -73,15 +73,31 @@ gap: 10px;
 }
 
 .allArticlesP {
-    display: flex;
-    flex-flow :  wrap;
-    justify-content: space-between;
-    
+    display: grid;
+  grid-template-columns: 50% 50% ; 
+  grid-template-rows: 150px 150px;
+  padding:  auto;
+
     
 }
 
 .allArticlesCH {
-    width: 49%;
+  
 border: 2px solid wheat;
 padding-left: 10px;
+}
+
+.articlesTitle{
+    display: flex;
+    gap: 10px;
+}
+
+.articlesTitle button {
+    margin-top: 20px;
+    color: white;
+    font-size: 20px;
+    width: 100px;
+    height: 35px;
+    background-color: orange;
+    cursor: pointer;
 }

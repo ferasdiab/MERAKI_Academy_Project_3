@@ -12,9 +12,7 @@ export default function Register() {
   const [errorMassage, setErrorMassage] = useState(false);
   const add = ()=>{
      
-      console.log({
-        firstName,lastName,age,country,email,password
-      })
+      
       axios.post("http://localhost:5000/users",{
         firstName,lastName,age,country,email,password
       }).then(result=>{

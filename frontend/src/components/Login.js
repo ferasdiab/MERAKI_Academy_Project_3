@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
 
 export default function Login({ loginFun, token }) {
   const history = useHistory();

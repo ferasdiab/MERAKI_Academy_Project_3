@@ -1,6 +1,12 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const { response } = require("express");
+const jwt = require('jsonwebtoken');
+require("dotenv").config();
+
+const SECRET = process.env.SECRET
+
+
 
 const usersSchema = new mongoose.Schema({
 firstName: {type:String, required:true},
@@ -18,6 +24,34 @@ usersSchema.pre("save", async function () {
     const hashedPassword =  await bcrypt.hash(this.password, salt);
     this.password = hashedPassword
   });
+
+  usersSchema.statics.login  =async function (email,password) {
+    try{
+        const user = await this.findOne({email}).populate("roles").exec()
+        
+        if (!user){
+            return [404, "no user"]
+        }
+        console.log(user)
+        const hashedPassword = user.password
+        const com = await bcrypt.compare(password, hashedPassword)
+        if (!com){
+            return [403,"wrong pass"]
+        }
+        const payload = {
+            userId: `${user._id}`,
+            country: user.country,
+            role: { role:user.roles.role, permissions:user.roles.permissions }
+          };
+          const  options =  { expiresIn: '60m' }
+          const token = jwt.sign(payload, SECRET, options);
+          return [200,token]
+        
+    } catch (error) {
+		throw new Error(error.message);
+	}
+    
+};
 
 const articlesSchema  = new mongoose.Schema({
     title:{type:String, required:true, unique:true},
