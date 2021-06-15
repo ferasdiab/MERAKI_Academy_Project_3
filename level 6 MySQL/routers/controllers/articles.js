@@ -15,7 +15,7 @@ const getArticlesByAuthor = (req, res) => {
   const author_id = req.query.author;
   const query = `SELECT * FROM articles WHERE author_id=? AND is_deleted =0;`;
   const data = [author_id];
-  db.query(query,data, (err, result) => {
+  db.query(query, data, (err, result) => {
     if (err) {
       res.send(err);
     }
@@ -27,17 +27,16 @@ const getAnArticleById = (req, res) => {
   const _id = req.params.id;
 
   if (!_id) return res.status(404).json("not found");
-
-  articlesModel
-    .findOne({ _id })
-    .populate("author", "firstName -_id")
-    .exec()
-    .then((result) => {
-      res.status(200).json(result);
-    })
-    .catch((err) => {
+  const query = `SELECT * FROM articles
+  INNER JOIN users ON articles.author_id = users.id WHERE  articles.id=? ;`;
+  const data = [_id];
+  db.query(query, data,(err, result) => {
+    if (err) {
       res.send(err);
-    });
+    }
+	console.log(result);
+    res.status(200).json(result);
+  });
 };
 
 const createNewArticle = (req, res) => {
@@ -53,44 +52,41 @@ const createNewArticle = (req, res) => {
 };
 
 const updateAnArticleById = (req, res) => {
-	const {title,description,author_id} =req.body
+  const { title, description, author_id } = req.body;
   const id = req.params.id;
- const query =  `UPDATE articles SET title = ? , description = ?,author_id=?  WHERE id = ?` ;
-const data = [title,description,author_id,id]
-db.query(query,data,(err,result)=>{
-	if (err) {
-		res.send(err);
-	  }
-	  res.status(200).json(result);
-})
+  const query = `UPDATE articles SET title = ? , description = ?,author_id=?  WHERE id = ?`;
+  const data = [title, description, author_id, id];
+  db.query(query, data, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.status(200).json(result);
+  });
 };
 
 const deleteArticleById = (req, res) => {
   const id = req.params.id;
-  const query =  `UPDATE articles SET is_deleted=1  WHERE id = ?` ;
-  const data =[id]
-  db.query(query,data,(err,result)=>{
-	if (err) {
-		res.send(err);
-	  }
-	  res.status(200).json(result);
-})
+  const query = `UPDATE articles SET is_deleted=1  WHERE id = ?`;
+  const data = [id];
+  db.query(query, data, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.status(200).json(result);
+  });
 };
 
 const deleteArticlesByAuthor = (req, res) => {
-  const author = req.body.author;
+  const author_id = req.body.author_id;
 
-  articlesModel
-    .deleteMany({ author })
-    .then((result) => {
-      res.status(200).json({
-        success: true,
-        message: `Success Delete atricle with id => ${author}`,
-      });
-    })
-    .catch((err) => {
+  const query = `UPDATE articles SET is_deleted=1  WHERE author_id = ?`;
+  const data = [author_id];
+  db.query(query, data, (err, result) => {
+    if (err) {
       res.send(err);
-    });
+    }
+    res.status(200).json(result);
+  });
 };
 
 module.exports = {
