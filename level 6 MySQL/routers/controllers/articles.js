@@ -28,7 +28,7 @@ const getAnArticleById = (req, res) => {
 
   if (!_id) return res.status(404).json("not found");
   const query = `SELECT * FROM articles
-  INNER JOIN users ON articles.author_id = users.id WHERE  articles.id=? ;`;
+  INNER JOIN users ON articles.author_id = users.user_id WHERE  articles.article_id=? AND articles.is_deleted=0  ;`;
   const data = [_id];
   db.query(query, data,(err, result) => {
     if (err) {
@@ -52,10 +52,10 @@ const createNewArticle = (req, res) => {
 };
 
 const updateAnArticleById = (req, res) => {
-  const { title, description, author_id } = req.body;
+  const { title, description, author_id,is_deleted } = req.body;
   const id = req.params.id;
-  const query = `UPDATE articles SET title = ? , description = ?,author_id=?  WHERE id = ?`;
-  const data = [title, description, author_id, id];
+  const query = `UPDATE articles SET title = ? , description = ?,author_id=? ,is_deleted=? WHERE article_id = ?`;
+  const data = [title, description, author_id,is_deleted, id];
   db.query(query, data, (err, result) => {
     if (err) {
       res.send(err);
@@ -66,7 +66,7 @@ const updateAnArticleById = (req, res) => {
 
 const deleteArticleById = (req, res) => {
   const id = req.params.id;
-  const query = `UPDATE articles SET is_deleted=1  WHERE id = ?`;
+  const query = `UPDATE articles SET is_deleted=1  WHERE article_id = ?`;
   const data = [id];
   db.query(query, data, (err, result) => {
     if (err) {

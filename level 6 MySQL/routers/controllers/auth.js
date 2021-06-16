@@ -24,12 +24,9 @@ const login = (req, res) => {
 		return
 	}
 	const payload = {
-		userId: result[0].id,
+		userId: result[0].user_id,
 		role: result[0].role_id
 	  };
-	  console.log(" result.id", result[0].id);
-	  console.log(" result.role_id", result[0].role_id);
-
 	  const  options =  { expiresIn: '60m' }
 	  const token = jwt.sign(payload, SECRET, options);
 	  res.status(200).json({token});
