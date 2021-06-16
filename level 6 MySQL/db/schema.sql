@@ -46,9 +46,9 @@ CREATE TABLE comments(
 SELECT * FROM users
   INNER JOIN roles ON users.role_id = roles.role_id  ;
 
+
+  SELECT * FROM articles
+  INNER JOIN users ON articles.author_id = users.user_id;
+
    select * from comments
    INNER JOIN users ON comments.commenter_id= users.user_id;
-
-
-
-

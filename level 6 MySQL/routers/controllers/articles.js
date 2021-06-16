@@ -30,32 +30,41 @@ const getAnArticleById = (req, res) => {
   const query = `SELECT * FROM articles
   INNER JOIN users ON articles.author_id = users.user_id WHERE  articles.article_id=? AND articles.is_deleted=0  ;`;
   const data = [_id];
-  db.query(query, data,(err, result) => {
+  db.query(query, data, (err, result) => {
     if (err) {
       res.send(err);
     }
-	console.log(result);
+    console.log(result);
     res.status(200).json(result);
   });
 };
 
 const createNewArticle = (req, res) => {
   const { title, description, author_id } = req.body;
+  let newId
   const query = `INSERT INTO articles (title, description, author_id) VALUES(?,?,?)`;
   const data = [title, description, author_id];
   db.query(query, data, (err, result) => {
     if (err) {
       res.send(err);
     }
-    res.status(201).json(result);
+	  newId = result.insertId
+    const query_2 = `SELECT * FROM articles WHERE article_id=?;`
+    const data=[newId]
+    db.query(query_2,data,(err,response)=>{
+      if (err) {
+        res.send(err);
+      }
+      res.status(201).json(response)
+    })
+	
   });
-};
-
+}
 const updateAnArticleById = (req, res) => {
-  const { title, description, author_id,is_deleted } = req.body;
+  const { title, description, author_id, is_deleted } = req.body;
   const id = req.params.id;
   const query = `UPDATE articles SET title = ? , description = ?,author_id=? ,is_deleted=? WHERE article_id = ?`;
-  const data = [title, description, author_id,is_deleted, id];
+  const data = [title, description, author_id, is_deleted, id];
   db.query(query, data, (err, result) => {
     if (err) {
       res.send(err);
