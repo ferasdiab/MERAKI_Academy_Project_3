@@ -8,11 +8,12 @@ import NewArticle from './components/newArticle';
 function App() {
 	return (
 		<div className="App">
+			
 			<Navigation />
-			<Route path="/register" component={Register} />
+			{/* <Route path="/register" component={Register} /> */}
 			<Route path="/login" component={Login} />
 			<Route path="/dashboard" component={Dashboard} />
-			<Route path="/newArticle" component={NewArticle} />
+			{/* <Route path="/newArticle" component={NewArticle} /> */}
 		</div>
 	);
 }
