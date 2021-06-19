@@ -1,32 +1,45 @@
-import React, { useContext } from 'react';
-import { NewArticleContext } from './../context/newArticle';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setArticle } from "../reducer/article/index";
+import jwt from "jsonwebtoken";
 
-const NewArticle = () => {
-	const newArticleContext = useContext(NewArticleContext);
+export default function NewArticle() {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [userId, setUserId] = useState("");
+  const state = useSelector((state) => {
+    return {
+      article: state.article.article,
+      token: state.token.token,
+    };
+  });
+  const user = jwt.decode(state.token);
+  if (user) {
+    setUserId(user.userId);
+  }
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		newArticleContext.createNewArticle();
-	};
+  const addOne = () => {
+	  console.log({title,description,userId});
+  };
 
-	return (
-		<>
-			<form onSubmit={handleSubmit}>
-				<input
-					type="text"
-					placeholder="article title here"
-					onChange={(e) => newArticleContext.setTitle(e.target.value)}
-				/>
-				<textarea
-					placeholder="article description here"
-					onChange={(e) => newArticleContext.setDescription(e.target.value)}
-				></textarea>
-				<button>Create New Article</button>
-			</form>
-
-			{newArticleContext.message && <div>{newArticleContext.message}</div>}
-		</>
-	);
-};
-
-export default NewArticle;
+  return (
+    <div>
+      <input
+        placeholder="title here "
+        onChange={(e) => {
+          setTitle(e.target.value);
+        }}
+      />
+      <br />
+      <textarea
+        placeholder="description"
+        onChange={(e) => {
+          setDescription(e.target.value);
+        }}
+      ></textarea>
+      <button onClick={addOne}>add new article</button>
+	 
+    </div>
+  );
+}

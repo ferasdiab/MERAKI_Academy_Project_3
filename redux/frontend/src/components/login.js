@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useHistory } from "react-router-dom";
-import { useDispatch,useSelector } from "react-redux"
-import {setToken} from "../reducer/login/index"
-
+import { useDispatch, useSelector } from "react-redux";
+import { setToken } from "../reducer/login/index";
 
 export default function Login() {
-	const state = useSelector((state) => {
-		return {
-		  token: state.token.token
-		};
-	  });
-	const dispatch = useDispatch();
+  const state = useSelector((state) => {
+    return {
+      token: state.token.token,
+    };
+  });
+  const dispatch = useDispatch();
   const history = useHistory();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,14 +23,14 @@ export default function Login() {
       })
       .then((result) => {
         if (result.status == 200) {
-			console.log(result.data);
-		 	dispatch(setToken(result.data.token));
-        history.push("/dashboard");
+          console.log(result.data);
+          dispatch(setToken(result.data.token));
+          history.push("/dashboard");
         }
       })
       .catch((error) => {
         console.log(error);
-		setLoginError(error.response.data);
+        //setLoginError(error.response.data);
       });
   };
   return (
@@ -57,7 +56,6 @@ export default function Login() {
         <button onClick={chick}>login</button>
       </div>
       <div>{loginError ? <p className="errCreated">{loginError}</p> : ""}</div>
-	 
     </div>
   );
 }
